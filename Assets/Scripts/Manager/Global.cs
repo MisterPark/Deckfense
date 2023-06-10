@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Global : MonoBehaviour
+namespace GoblinGames
 {
-    // Start is called before the first frame update
-    void Start()
+    public class Global : MonoSingleton<Global>
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
+
