@@ -6,9 +6,28 @@ namespace GoblinGames
 {
     public class Test : MonoBehaviour
     {
+        [SerializeField] private Variable<int> testHp;
+
         private void Start()
         {
+            testHp.Value -= 10;
+
             SceneController.LoadScene("InGame");
+        }
+
+        private void OnEnable()
+        {
+            testHp.OnValueChanged.AddListener(OnTestHpChanged);
+        }
+
+        private void OnDisable()
+        {
+            testHp.OnValueChanged.RemoveListener(OnTestHpChanged);
+        }
+
+        private void OnTestHpChanged(int hp)
+        {
+            Debug.Log($"체력이 {hp}로 변경됨.");
         }
     }
 }

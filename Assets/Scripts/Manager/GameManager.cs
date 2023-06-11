@@ -1,18 +1,40 @@
+using GoblinGames;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameEvent<string> sceneChangedEvent;
+
+    private bool isGameScene = false;
+
+    private void OnEnable()
     {
-        
+        sceneChangedEvent.AddListener(OnSceneChanged);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        sceneChangedEvent.RemoveListener(OnSceneChanged);
+    }
+
+    private void Update()
+    {
+        if (isGameScene == false) return;
+
+        Debug.Log("∞‘¿” ¡ﬂ");
+    }
+
+    private void OnSceneChanged(string sceneName)
+    {
+        if(sceneName == "InGame")
+        {
+            isGameScene = true;
+        }
+        else
+        {
+            isGameScene = false;
+        }
     }
 }
