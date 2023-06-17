@@ -1,6 +1,6 @@
 {
     "name": "Goblin Games",
-    "rootNamespace": "Goblin Games",
+    "rootNamespace": "GoblinGames",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
