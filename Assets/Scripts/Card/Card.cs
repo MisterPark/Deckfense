@@ -4,100 +4,139 @@ using UnityEngine.UI;
 
 namespace GoblinGames
 {
-    public class Card : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
+    public class Card : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public enum CardType {Tower, Spell, none};
-        private bool isDragging = false;
+        protected bool isDragging = false;
 
-        private Vector3 originPosition;
-        private Quaternion originRotation;
-        private Vector3 originScale;
+        //private Vector3 originPosition;
+        //[HideInInspector] public Quaternion originRotation;
+        [HideInInspector] public Vector3 originScale;
 
-        private Vector3 actionPos;
-        private bool isActionMove = false;
-        private Vector3 vel;
+        protected Vector3 actionPos;
+        protected bool isActionMove = false;
+        protected Vector3 vel;
+        private bool isMouseHover;
+        private float hoverTime;
 
         public int cardNumber;
-        public Hand ownerHand;
+        [HideInInspector] public Hand ownerHand;
         public CardType cardType;
-        private GameObject towerSummon = null;
-        private GameObject dummyTower = null;
+        protected GameObject towerSummon = null;
+        protected GameObject dummyTower = null;
 
-        void Start()
+        protected virtual void Awake()
         {
-            towerSummon = Resources.Load<GameObject>("TestDummy_01");
+            hoverTime = 0f;
+            originScale = new Vector3(0.6f, 0.6f, 0.6f);
         }
 
-        void Update()
+        protected virtual void Update()
         {
-            if (isActionMove && !isDragging)
-            {
-                transform.position = Vector3.SmoothDamp(transform.position, actionPos, ref vel, 0.5f);
-                if(Vector3.Distance(transform.position, actionPos) < 3f)
-                {
-                    isActionMove = false;
-                }
-            }
+            CardMove();
+            MouseHover();
         }
 
-        public void Skill_Init()
+        public virtual void Skill_Init()
         {
-            dummyTower = Instantiate(towerSummon);
+            
         }
 
-        public void Skill_Update()
+        public virtual void Skill_Update()
         {
-            PlaceTower();
+            
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if(!ownerHand.cardAvailable)
+            if(!ownerHand.isCardAvailable)
             {
                 return;
             }
 
             isDragging = true;
-
-            originPosition = transform.localPosition;
-            originRotation = transform.localRotation;
-            originScale = transform.localScale;
-
-            transform.localRotation = Quaternion.identity;
-            transform.localScale = new Vector3(1.2f, 1.2f);
-
-            //Debug.Log("Begin");
+            CardZoomIn();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             if(isDragging)
             {
-                transform.localPosition = eventData.position;
+                transform.position = eventData.position;
             }
+            hoverTime = 0f;
+            ownerHand.cardBeingDragging = this;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             isDragging = false;
 
-            if (transform.localPosition.y > Hand.screenHeight * 0.4f)
+            if (transform.position.y > GameManager.screenHeight * 0.4f)
             {
-                ownerHand.UseCard(this); 
+                ownerHand.CardUse(this); 
             }
             else
             {
-                transform.localPosition = originPosition;
-                transform.localRotation = originRotation;
-                transform.localScale = originScale;
+                ownerHand.CardBackToOriginPos(this);
             }
-
-            //Debug.Log("End");
+            ownerHand.cardBeingDragging = null;
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if(isDragging)
+            {
+                return;
+            }
+            isMouseHover = true;   
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (hoverTime == -1f)  // 카드에 대고있던 1f 초가 지나 확대가 이루어 졌을경우
+            {
+                ownerHand.CardBackToOriginPos(this);
+            }
+            isMouseHover = false;
+            hoverTime = 0f;
+        }
+
+        private void CardMove()
+        {
+            if (isActionMove && !isDragging)
+            {
+                transform.position = Vector3.SmoothDamp(transform.position, actionPos, ref vel, 0.5f);
+                if (Vector3.Distance(transform.position, actionPos) < 1f)
+                {
+                    isActionMove = false;
+                }
+            }
+        }
+
+        private void MouseHover()
+        {
+            if(isMouseHover && !isActionMove && !isDragging && ownerHand.cardBeingDragging == null)
+            {
+                if (hoverTime >= 0f)
+                {
+                    if (hoverTime < 1f)
+                    {
+                        hoverTime += Time.deltaTime;
+                    }
+                    else
+                    {
+                        CardZoomIn();
+                        transform.position = new Vector3(transform.position.x, GameManager.screenHeight * 0.15f, transform.position.z);
+                        hoverTime = -1;
+                    }
+                }
+            }
         }
 
         public void SetActionPos(Vector3 vec3)
@@ -106,7 +145,17 @@ namespace GoblinGames
             isActionMove = true;
         }
 
-        private void PlaceTower()
+        public void CardZoomIn()
+        {
+            //originPosition = transform.localPosition;
+            //originRotation = transform.rotation;
+            //originScale = transform.localScale;
+
+            transform.rotation = Quaternion.identity;
+            transform.localScale = new Vector3(1.1f, 1.1f);
+        }
+
+        protected void PlaceTower()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -126,30 +175,23 @@ namespace GoblinGames
                         GameObject newTower = Instantiate(prefab);
                         newTower.transform.position = hit.transform.parent.position;
                         newTower.transform.Translate(new Vector3(0f, 1f, 0f));
+                        newTower.transform.SetParent(ownerHand.towerField.transform);
                         towerTile.tileState = TowerTile.TileState.Used;
 
                         //isPlaceTower = false;
                         Destroy(dummyTower);
                         dummyTower = null;
-                        //// Hand 쪽에서 공통적으로 처리해도 될듯
-                        ownerHand.RemoveCard(this);
-                        ownerHand.cardAvailable = true;
-                        ////
+                        ownerHand.CardUseSuccess(this);
                     }
                 }
             }
             else if(Input.GetMouseButtonDown(1))
             {
-                // 카드취소부분, Hand쪽과 Card쪽 뺼수있는부분 각각 나눌것
                 Destroy(dummyTower);
                 dummyTower = null;
-                ownerHand.cardAvailable = true;
                 GetComponent<Image>().enabled = true;
-                ownerHand.usedCard = null;
 
-                transform.localPosition = originPosition;
-                transform.localRotation = originRotation;
-                transform.localScale = originScale;
+                ownerHand.CardUseCancel(this);
             }
             else
             {
@@ -170,5 +212,6 @@ namespace GoblinGames
             }
             
         }
+
     }
 }

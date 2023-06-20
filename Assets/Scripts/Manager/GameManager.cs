@@ -7,11 +7,12 @@ namespace GoblinGames
 {
     public class GameManager : MonoBehaviour
     {
+        public static float screenWidth = 1920f;
+        public static float screenHeight = 960f;
+
         [SerializeField] private GameEvent<string> sceneChangedEvent;
 
         private bool isGameScene = false;
-        private bool isPlaceTower = false;
-        private GameObject selectedTower = null;
 
         private void OnEnable()
         {
