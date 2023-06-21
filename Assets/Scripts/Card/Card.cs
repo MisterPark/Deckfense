@@ -11,7 +11,8 @@ namespace GoblinGames
 
         //private Vector3 originPosition;
         //[HideInInspector] public Quaternion originRotation;
-        [HideInInspector] public Vector3 originScale;
+        public Vector3 originScale;
+        [HideInInspector] public Vector3 OriginScale { get { return originScale; } }
 
         protected Vector3 actionPos;
         protected bool isActionMove = false;
@@ -19,8 +20,15 @@ namespace GoblinGames
         private bool isMouseHover;
         private float hoverTime;
 
-        public int cardNumber;
-        [HideInInspector] public Hand ownerHand;
+        private int cardNumber;
+        public int CardNumber { get { return cardNumber; } set { cardNumber = value; } }
+
+        private Hand ownerHand;
+        public Hand OwnerHand { get { return ownerHand; } set { ownerHand = value; } }
+
+        private int siblingIndex;
+        public int SiblingIndex { get { return siblingIndex; } set { siblingIndex = value; } }
+
         public CardType cardType;
         protected GameObject towerSummon = null;
         protected GameObject dummyTower = null;
@@ -29,6 +37,10 @@ namespace GoblinGames
         {
             hoverTime = 0f;
             originScale = new Vector3(0.6f, 0.6f, 0.6f);
+            //Test
+            towerSummon = Resources.Load<GameObject>("TestDummy_01");
+            cardType = CardType.Tower;
+            //
         }
 
         protected virtual void Update()
@@ -49,7 +61,7 @@ namespace GoblinGames
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if(!ownerHand.isCardAvailable)
+            if(!ownerHand.IsCardAvailable)
             {
                 return;
             }
@@ -65,7 +77,7 @@ namespace GoblinGames
                 transform.position = eventData.position;
             }
             hoverTime = 0f;
-            ownerHand.cardBeingDragging = this;
+            ownerHand.CardBeingDragging = this;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -80,7 +92,7 @@ namespace GoblinGames
             {
                 ownerHand.CardBackToOriginPos(this);
             }
-            ownerHand.cardBeingDragging = null;
+            ownerHand.CardBeingDragging = null;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -94,7 +106,7 @@ namespace GoblinGames
             {
                 return;
             }
-            isMouseHover = true;   
+            isMouseHover = true;
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -102,6 +114,7 @@ namespace GoblinGames
             if (hoverTime == -1f)  // 카드에 대고있던 1f 초가 지나 확대가 이루어 졌을경우
             {
                 ownerHand.CardBackToOriginPos(this);
+                transform.SetSiblingIndex(siblingIndex);
             }
             isMouseHover = false;
             hoverTime = 0f;
@@ -121,7 +134,7 @@ namespace GoblinGames
 
         private void MouseHover()
         {
-            if(isMouseHover && !isActionMove && !isDragging && ownerHand.cardBeingDragging == null)
+            if(isMouseHover && !isActionMove && !isDragging && ownerHand.CardBeingDragging == null)
             {
                 if (hoverTime >= 0f)
                 {
@@ -134,6 +147,7 @@ namespace GoblinGames
                         CardZoomIn();
                         transform.position = new Vector3(transform.position.x, GameManager.screenHeight * 0.15f, transform.position.z);
                         hoverTime = -1;
+                        transform.SetAsLastSibling();
                     }
                 }
             }
@@ -152,7 +166,7 @@ namespace GoblinGames
             //originScale = transform.localScale;
 
             transform.rotation = Quaternion.identity;
-            transform.localScale = new Vector3(1.1f, 1.1f);
+            transform.localScale = new Vector3(1f, 1f);
         }
 
         protected void PlaceTower()
@@ -175,7 +189,7 @@ namespace GoblinGames
                         GameObject newTower = Instantiate(prefab);
                         newTower.transform.position = hit.transform.parent.position;
                         newTower.transform.Translate(new Vector3(0f, 1f, 0f));
-                        newTower.transform.SetParent(ownerHand.towerField.transform);
+                        newTower.transform.SetParent(ownerHand.TowerField.transform);
                         towerTile.tileState = TowerTile.TileState.Used;
 
                         //isPlaceTower = false;

@@ -372,7 +372,6 @@ GameObject:
   - component: {fileID: 1013381929}
   - component: {fileID: 1013381930}
   - component: {fileID: 1013381931}
-  - component: {fileID: 1013381932}
   m_Layer: 5
   m_Name: Hand
   m_TagString: Untagged
@@ -421,8 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hands: []
-  isCardAvailable: 1
-  towerField: {fileID: 1066539785}
+  canvas: {fileID: 481804193}
 --- !u!1 &1066539785
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,10 +10,12 @@ namespace GoblinGames
         private Canvas canvas;
 
         private Vector2 oldScreenSize;
+        public Vector2 OldScreenSize { get { return oldScreenSize; } } 
 
         private void Start()
         {
-            canvas = GetComponentInParent<Canvas>();
+            //canvas = GetComponentInParent<Canvas>();
+            canvas = GetComponent<Canvas>();
             oldScreenSize = new Vector2(canvas.pixelRect.width, canvas.pixelRect.height);
             rectTransform.sizeDelta = oldScreenSize;
         }
@@ -29,7 +31,7 @@ namespace GoblinGames
 
         private void OnValidate()
         {
-            if(rectTransform == null) rectTransform = GetComponent<RectTransform>();
+            //if(rectTransform == null) rectTransform = GetComponent<RectTransform>();
         }
 
         private bool CheckEpsilon(float a, float b)

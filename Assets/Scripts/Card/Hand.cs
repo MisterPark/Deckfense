@@ -17,15 +17,23 @@ namespace GoblinGames
 
         public List<Card> hands = new List<Card>();
         private Card usedCard = null;
-        [HideInInspector] public bool isCardAvailable = true;
+        private bool isCardAvailable = true;
+        [HideInInspector] public bool IsCardAvailable { get{ return isCardAvailable; } set { isCardAvailable = value; } }
 
-        public GameObject towerField;
-        public Card cardBeingDragging = null;
+        private GameObject towerField;
+        public GameObject TowerField { get { return towerField; } set { towerField = value; } }
+
+        private Card cardBeingDragging = null;
+        public Card CardBeingDragging { get { return cardBeingDragging; } set { cardBeingDragging = value; } }
         //public Card cardBeingHovering = null;
+        [SerializeField] Canvas canvas;
+        public Canvas Canvas { get { return canvas; } }
 
-        //public 변수들 private 으로, get set 함수 다 만들것 // 프로퍼티로
+
+        // public 변수들 private 으로, get set 함수 다 만들것 // 프로퍼티로
         // card 스크립에 skill 클래스들어갈 변수 만들어주고, skill_fireball 처럼 하위클래스 만들고, card의 skill 클래스 변수에 넣기
         // 해상도에 따라 카드 위치, 크기 조정하기
+        // 마우스댔을때 카드 맨앞으로 // 해결
 
 
         // Start is called before the first frame update
@@ -46,6 +54,7 @@ namespace GoblinGames
             {
                 Draw();
                 sort();
+                Debug.Log(canvas.pixelRect.width);
             }
         }
 
@@ -71,9 +80,9 @@ namespace GoblinGames
                     //hands[i].transform.position = new Vector3(cardPos.x, cardPos.y - Mathf.Abs(((handsCount - 1) / 2f - i) * screenHeight * 0.01f), cardPos.z);
                     hands[i].SetActionPos(new Vector3(cardPos.x, cardPos.y - Mathf.Abs(((handsCount - 1) / 2f - i) * GameManager.screenHeight * 0.012f), cardPos.z));
                     
-                    
                     cardPos.x += intervalPos;
                     hands[i].transform.rotation = Quaternion.Euler(0f, 0f, 30f - (intervalAngle * i));
+                    hands[i].SiblingIndex = i;
                 }
             }
         }
@@ -134,7 +143,8 @@ namespace GoblinGames
 
             card.transform.position = new Vector3(GameManager.screenWidth * 0.5f, GameManager.screenHeight * -0.1f, 0f);
             card.transform.rotation = GetCardRotateInHand(card);
-            card.transform.localScale = card.originScale;
+            card.transform.localScale = card.OriginScale;
+            card.transform.SetSiblingIndex(card.SiblingIndex);
         }
 
         public void CardUse(Card _usedCard)
@@ -187,8 +197,8 @@ namespace GoblinGames
             newCard.transform.SetParent(transform);
             newCard.transform.position = firstCardPos;
             Card newCardComp = newCard.GetComponent<Card>();
-            newCardComp.ownerHand = this;
-            newCardComp.cardNumber = 1;
+            newCardComp.OwnerHand = this;
+            newCardComp.CardNumber = 1;
             newCardComp.cardType = Card.CardType.Tower;
             hands.Add(newCardComp);
         }

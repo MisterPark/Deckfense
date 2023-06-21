@@ -10,7 +10,6 @@ namespace GoblinGames
         protected override void Awake()
         {
             base.Awake();
-            towerSummon = Resources.Load<GameObject>("TestDummy_01");
         }
         
         // Update is called once per frame
