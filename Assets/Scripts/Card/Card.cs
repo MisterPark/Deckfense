@@ -29,18 +29,16 @@ namespace GoblinGames
         private int siblingIndex;
         public int SiblingIndex { get { return siblingIndex; } set { siblingIndex = value; } }
 
-        public CardType cardType;
-        protected GameObject towerSummon = null;
-        protected GameObject dummyTower = null;
+        private CardType type;
+        public CardType Type { get { return type; } set { type = value; } }
+
+        private Skill cardSkill;
+        public Skill CardSkill { get { return cardSkill; } set { cardSkill = value; } }
 
         protected virtual void Awake()
         {
             hoverTime = 0f;
             originScale = new Vector3(0.6f, 0.6f, 0.6f);
-            //Test
-            towerSummon = Resources.Load<GameObject>("TestDummy_01");
-            cardType = CardType.Tower;
-            //
         }
 
         protected virtual void Update()
@@ -49,15 +47,6 @@ namespace GoblinGames
             MouseHover();
         }
 
-        public virtual void Skill_Init()
-        {
-            
-        }
-
-        public virtual void Skill_Update()
-        {
-            
-        }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -167,64 +156,6 @@ namespace GoblinGames
 
             transform.rotation = Quaternion.identity;
             transform.localScale = new Vector3(1f, 1f);
-        }
-
-        protected void PlaceTower()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.transform.CompareTag("TowerTile"))
-                    {
-                        TowerTile towerTile = hit.transform.parent.GetComponent<TowerTile>();
-                        if (towerTile.tileState != TowerTile.TileState.UnUsed)
-                        {
-                            return;
-                        }
-
-                        GameObject prefab = Resources.Load<GameObject>("TestTower_01");
-                        GameObject newTower = Instantiate(prefab);
-                        newTower.transform.position = hit.transform.parent.position;
-                        newTower.transform.Translate(new Vector3(0f, 1f, 0f));
-                        newTower.transform.SetParent(ownerHand.TowerField.transform);
-                        towerTile.tileState = TowerTile.TileState.Used;
-
-                        //isPlaceTower = false;
-                        Destroy(dummyTower);
-                        dummyTower = null;
-                        ownerHand.CardUseSuccess(this);
-                    }
-                }
-            }
-            else if(Input.GetMouseButtonDown(1))
-            {
-                Destroy(dummyTower);
-                dummyTower = null;
-                GetComponent<Image>().enabled = true;
-
-                ownerHand.CardUseCancel(this);
-            }
-            else
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.transform.CompareTag("TowerTile"))
-                    {
-                        dummyTower.transform.position = hit.transform.parent.position;
-                        dummyTower.transform.Translate(new Vector3(0f, 1f, 0f));
-                    }
-                    else
-                    {
-                        dummyTower.transform.position = new Vector3(0f, -100f, 0f);
-                    }
-                }
-            }
-            
         }
 
     }

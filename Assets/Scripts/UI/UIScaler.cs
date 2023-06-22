@@ -15,7 +15,7 @@ namespace GoblinGames
         private void Start()
         {
             //canvas = GetComponentInParent<Canvas>();
-            canvas = GetComponent<Canvas>();
+            canvas = GetComponentInParent<Canvas>();
             oldScreenSize = new Vector2(canvas.pixelRect.width, canvas.pixelRect.height);
             rectTransform.sizeDelta = oldScreenSize;
         }

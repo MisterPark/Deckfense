@@ -15,12 +15,13 @@ namespace GoblinGames
         private Vector3 firstCardPos = new Vector3(GameManager.screenWidth, 0f, 0f);
 
 
-        public List<Card> hands = new List<Card>();
+        private List<Card> hands = new List<Card>();
+        public List<Card> Hands { get { return Hands; } }
         private Card usedCard = null;
         private bool isCardAvailable = true;
         [HideInInspector] public bool IsCardAvailable { get{ return isCardAvailable; } set { isCardAvailable = value; } }
 
-        private GameObject towerField;
+        [SerializeField] GameObject towerField;
         public GameObject TowerField { get { return towerField; } set { towerField = value; } }
 
         private Card cardBeingDragging = null;
@@ -47,7 +48,7 @@ namespace GoblinGames
         {
             if(usedCard != null)
             {
-                usedCard.Skill_Update();
+                usedCard.CardSkill.Use_Update();
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -151,7 +152,7 @@ namespace GoblinGames
         {
             usedCard = _usedCard;
             usedCard.GetComponent<Image>().enabled = false;
-            usedCard.Skill_Init();
+            usedCard.CardSkill.Use_Start();
             isCardAvailable = false;
             //switch(card.cardType)
             //{
@@ -192,14 +193,17 @@ namespace GoblinGames
 
         public void Draw()
         {
-            GameObject prefab = Resources.Load<GameObject>("Card/Card_0001");
+            GameObject prefab = Resources.Load<GameObject>("Card/Card");
             GameObject newCard = Instantiate(prefab);
             newCard.transform.SetParent(transform);
             newCard.transform.position = firstCardPos;
             Card newCardComp = newCard.GetComponent<Card>();
             newCardComp.OwnerHand = this;
             newCardComp.CardNumber = 1;
-            newCardComp.cardType = Card.CardType.Tower;
+            newCardComp.CardSkill = newCard.AddComponent<Skill_Test>();
+            newCardComp.CardSkill.OwnerHand = this;
+            newCardComp.CardSkill.OwnerCard = newCardComp;
+            //newCard.GetComponent<Image>().so
             hands.Add(newCardComp);
         }
 

@@ -372,6 +372,7 @@ GameObject:
   - component: {fileID: 1013381929}
   - component: {fileID: 1013381930}
   - component: {fileID: 1013381931}
+  - component: {fileID: 1013381932}
   m_Layer: 5
   m_Name: Hand
   m_TagString: Untagged
@@ -419,8 +420,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e72603c11aa4114c969b33633a1689d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hands: []
+  towerField: {fileID: 1066539785}
   canvas: {fileID: 481804193}
+--- !u!114 &1013381932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013381928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 448534d050bf88248940acff05a3905a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectTransform: {fileID: 481804194}
 --- !u!1 &1066539785
 GameObject:
   m_ObjectHideFlags: 0
