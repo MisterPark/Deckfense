@@ -6,7 +6,8 @@ namespace GoblinGames
 {
     public class UIScaler : MonoBehaviour
     {
-        [SerializeField] RectTransform rectTransform;
+        [SerializeField] private RectTransform rectTransform;
+        [SerializeField] private GameEvent<Vector2> resolutionChangedEvent;
         private Canvas canvas;
 
         private Vector2 oldScreenSize;
@@ -14,24 +15,23 @@ namespace GoblinGames
 
         private void Start()
         {
-            //canvas = GetComponentInParent<Canvas>();
-            canvas = GetComponentInParent<Canvas>();
-            oldScreenSize = new Vector2(canvas.pixelRect.width, canvas.pixelRect.height);
-            rectTransform.sizeDelta = oldScreenSize;
+            Debug.Log($"{rectTransform.rect}");
+            oldScreenSize = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
         }
 
         private void Update()
         {
-            if(CheckEpsilon(oldScreenSize.x, canvas.pixelRect.width) || CheckEpsilon(oldScreenSize.y, canvas.pixelRect.height))
+            if(CheckEpsilon(oldScreenSize.x, rectTransform.rect.width) || CheckEpsilon(oldScreenSize.y, rectTransform.rect.height))
             {
-                oldScreenSize = new Vector2(canvas.pixelRect.width, canvas.pixelRect.height);
-                rectTransform.sizeDelta = oldScreenSize;
+                oldScreenSize = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+                resolutionChangedEvent.Invoke(oldScreenSize);
+                Debug.Log($"{rectTransform.rect}");
             }
         }
 
         private void OnValidate()
         {
-            //if(rectTransform == null) rectTransform = GetComponent<RectTransform>();
+            if(rectTransform == null) rectTransform = GetComponent<RectTransform>();
         }
 
         private bool CheckEpsilon(float a, float b)
