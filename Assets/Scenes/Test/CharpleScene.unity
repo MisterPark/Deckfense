@@ -486,6 +486,8 @@ MonoBehaviour:
     type: 2}
   towerField: {fileID: 1066539785}
   canvas: {fileID: 481804193}
+  testPrefab: {fileID: 5884399722540903305, guid: 4e114b49d8332214f973a847137e60df,
+    type: 3}
 --- !u!114 &1013381932
 MonoBehaviour:
   m_ObjectHideFlags: 0

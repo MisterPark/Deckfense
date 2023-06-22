@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,9 +32,11 @@ namespace GoblinGames
         public Card CardBeingDragging { get { return cardBeingDragging; } set { cardBeingDragging = value; } }
         public Canvas Canvas { get { return canvas; } }
         public List<Card> Hands { get { return Hands; } }
-        public bool IsCardAvailable { get{ return isCardAvailable; } set { isCardAvailable = value; } }
+        public bool IsCardAvailable { get { return isCardAvailable; } set { isCardAvailable = value; } }
 
-
+        #region Test
+        private List<TestCard> testCards = new List<TestCard>();
+        #endregion
 
 
         // public 변수들 private 으로, get set 함수 다 만들것 // 프로퍼티로
@@ -62,7 +63,7 @@ namespace GoblinGames
 
         private void Update()
         {
-            if(usedCard != null)
+            if (usedCard != null)
             {
                 usedCard.CardSkill.Use_Update();
             }
@@ -72,7 +73,13 @@ namespace GoblinGames
                 Draw();
                 Sort();
                 Debug.Log(canvas.pixelRect.width);
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.W))
+            {
                 Test();
+                TestSort();
             }
         }
 
@@ -89,7 +96,7 @@ namespace GoblinGames
                 hands[0].SetDestination(new Vector3(rectTransform.rect.width * 0.5f, rectTransform.rect.height * 0.05f, 0f));
                 hands[0].transform.rotation = Quaternion.identity;
             }
-            else 
+            else
             {
                 float intervalAngle = 60f / (handsCount - 1);
                 float intervalPos = (maxCardIntervalPos * 0.2f + (maxCardIntervalPos * handsCount * 0.14f)) / (handsCount - 1); // 180
@@ -98,7 +105,7 @@ namespace GoblinGames
                 {
                     //hands[i].transform.position = new Vector3(cardPos.x, cardPos.y - Mathf.Abs(((handsCount - 1) / 2f - i) * screenHeight * 0.01f), cardPos.z);
                     hands[i].SetDestination(new Vector3(cardPos.x, cardPos.y - Mathf.Abs(((handsCount - 1) / 2f - i) * rectTransform.rect.height * 0.012f), cardPos.z));
-                    
+
                     cardPos.x += intervalPos;
                     hands[i].transform.rotation = Quaternion.Euler(0f, 0f, 30f - (intervalAngle * i));
                     hands[i].SiblingIndex = i;
@@ -123,7 +130,7 @@ namespace GoblinGames
                 Vector3 cardPos = new Vector3((GameManager.screenWidth * 0.5f) - (intervalPos * (handsCount - 0.5f - (handsCount / 2f))), GameManager.screenHeight * 0.05f, 0f);
                 for (int i = 0; i < handsCount; i++)
                 {
-                    if(hands[i] != cardToFind)
+                    if (hands[i] != cardToFind)
                     {
                         cardPos.x += intervalPos;
                         continue;
@@ -176,7 +183,7 @@ namespace GoblinGames
             //{
             //    case Card.CardType.Tower:
             //        {
-                        
+
             //            break;
             //        }
             //    case Card.CardType.Spell:
@@ -203,7 +210,7 @@ namespace GoblinGames
 
         public void RemoveCard(Card card)
         {
-            Card foundCard = hands.Find(x=>x==card);
+            Card foundCard = hands.Find(x => x == card);
             hands.Remove(card);
             Destroy(foundCard.gameObject);
             Sort();
@@ -211,8 +218,7 @@ namespace GoblinGames
 
         public void Draw()
         {
-            GameObject prefab = Resources.Load<GameObject>("Card/Card");
-            GameObject newCard = Instantiate(prefab);
+            GameObject newCard = Instantiate(testPrefab, transform);
             newCard.transform.SetParent(transform);
             newCard.transform.position = firstCardPos;
             Card newCardComp = newCard.GetComponent<Card>();
@@ -234,7 +240,27 @@ namespace GoblinGames
         private void Test()
         {
             GameObject obj = Instantiate(testPrefab, transform);
-            obj.transform.localPosition = Vector3.zero;
+            var testCard = obj.GetComponent<TestCard>();
+            testCards.Add(testCard);
+            obj.transform.localPosition = new Vector3(rectTransform.rect.width, 0f, 0f);
+
+        }
+
+        private void TestSort()
+        {
+            int count = testCards.Count;
+            float unitAngle = count == 1 ? 0f : 60f / (count - 1);
+            float offsetAngle = count == 1 ? 0f : 30f;
+
+            Vector3 center = new Vector3(rectTransform.rect.width * 0.5f, rectTransform.rect.height * 0.125f, 0f);
+            Vector3 margin = new Vector3(rectTransform.rect.width * 0.05f, 0f, 0f);
+            Vector3 totalMarginHalf = margin * count * 0.5f;
+
+            for (int i = 0; i < count; i++)
+            {
+                testCards[i].SetDestination(center + (margin * i) - totalMarginHalf);
+                testCards[i].transform.localRotation = Quaternion.Euler(0f, 0f, -unitAngle * i + offsetAngle);
+            }
         }
     }
 }

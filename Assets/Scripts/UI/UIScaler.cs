@@ -17,6 +17,7 @@ namespace GoblinGames
         {
             Debug.Log($"{rectTransform.rect}");
             oldScreenSize = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+            resolutionChangedEvent.Invoke(oldScreenSize);
         }
 
         private void Update()
