@@ -92,25 +92,25 @@ namespace GoblinGames
 
             if (mouseDirection == MouseDirection.Left)
             {
-                if (mousePos.x > GameManager.screenWidth * 0.35f)
+                if (mousePos.x > Screen.width * 0.35f)
                 {
                     mouseDirection = MouseDirection.Center;
                 }
             }
             else if (mouseDirection == MouseDirection.Right)
             {
-                if (mousePos.x < GameManager.screenWidth * 0.65f)
+                if (mousePos.x < Screen.width * 0.65f)
                 {
                     mouseDirection = MouseDirection.Center;
                 }
             }
             else if (mouseDirection == MouseDirection.Center)
             {
-                if (mousePos.x < GameManager.screenWidth * 0.14f)
+                if (mousePos.x < Screen.width * 0.14f)
                 {
                     mouseDirection = MouseDirection.Left;
                 }
-                else if (mousePos.x > GameManager.screenWidth * 0.86f)
+                else if (mousePos.x > Screen.width * 0.86f)
                 {
                     mouseDirection = MouseDirection.Right;
                 }

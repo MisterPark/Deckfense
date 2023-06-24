@@ -15,7 +15,9 @@ namespace GoblinGames
 
         private void Awake()
         {
-            oldResolution = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+            //처음에 1920f, 1080f 기준으로 잡아야 카드스케일 기준이 잘 잡힘
+            //oldResolution = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+            oldResolution = new Vector2(1920f, 1080f);
             Debug.Log($"old {rectTransform.rect}");
         }
 
