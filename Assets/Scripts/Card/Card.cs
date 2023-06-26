@@ -8,6 +8,7 @@ namespace GoblinGames
     {
         public enum CardType {Tower, Spell, none};
 
+        public const float heightRequiredUseCard = 0.2f;
         //private Vector3 originPosition;
         //[HideInInspector] public Quaternion originRotation;
         //public Vector3 originScale;
@@ -38,7 +39,6 @@ namespace GoblinGames
         protected virtual void Awake()
         {
             hoverTime = 0f;
-            //originScale = new Vector3(0.6f, 0.6f, 0.6f);
             rectTransform = GetComponent<RectTransform>();
         }
 
@@ -46,25 +46,6 @@ namespace GoblinGames
         {
             CardMove();
             MouseHover();
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                Debug.Log($"{transform.position.x}x{transform.position.y}");
-                Debug.Log($"{transform.localPosition.x}x{transform.localPosition.y}");
-                Debug.Log($"{transform.localPosition.x}x{transform.localPosition.y}");
-
-            }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                transform.position = new Vector3(0f, 0f, 0f);
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                transform.localPosition = new Vector3(0f, 0f, 0f);
-            }
-            if(Input.GetKeyDown(KeyCode.T))
-            {
-                Debug.Log($"{rectTransform.anchoredPosition.x}x{rectTransform.anchoredPosition.y}");
-            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -76,31 +57,50 @@ namespace GoblinGames
 
             isDragging = true;
             CardZoomIn();
+            transform.SetAsLastSibling();
+            ownerHand.CardBeingDragging = this;
+
+            cardSkill.CardBeginDrag(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (isDragging)
+            
+            if (!isDragging)
             {
-                transform.position = eventData.position;
+                return;
+            }
+            transform.position = eventData.position;
+
+            if (transform.position.y > Screen.height * heightRequiredUseCard)
+            {
+                GetComponent<Image>().enabled = false;
+            }
+            else
+            {
+                GetComponent<Image>().enabled = true;
             }
             hoverTime = 0f;
-            ownerHand.CardBeingDragging = this;
+
+            cardSkill.CardDrag(eventData);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (!isDragging)
+            {
+                return;
+            }
             isDragging = false;
 
-            if (transform.position.y > Screen.height * 0.25f)
-            {
-                ownerHand.CardUse(this);
-            }
-            else
+            if (transform.position.y < Screen.height * heightRequiredUseCard)
             {
                 ownerHand.CardBackToOriginPos(this);
             }
             ownerHand.CardBeingDragging = null;
+            transform.SetSiblingIndex(siblingIndex);
+
+            cardSkill.CardEndDrag(eventData);
         }
 
         public void OnPointerClick(PointerEventData eventData)

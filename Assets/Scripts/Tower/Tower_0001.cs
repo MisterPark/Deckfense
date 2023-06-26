@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GoblinGames
 {
-    public class Tower_0001 : MonoBehaviour
+    public class Tower_0001 : Tower
     {
         // Start is called before the first frame update
         void Start()

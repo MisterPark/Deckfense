@@ -162,7 +162,7 @@ namespace GoblinGames
         public void CardUse(Card _usedCard)
         {
             usedCard = _usedCard;
-            usedCard.GetComponent<Image>().enabled = false;
+            //usedCard.GetComponent<Image>().enabled = false;
             usedCard.CardSkill.Use_Start();
             isCardAvailable = false;
             //switch(card.cardType)
@@ -180,9 +180,9 @@ namespace GoblinGames
             //}
         }
 
-        public void CardUseSuccess(Card _usedCard)
+        public void CardUseEnd(Card _usedCard)
         {
-            RemoveCard(usedCard);
+            RemoveCard(_usedCard);
             usedCard = null;
             isCardAvailable = true;
         }
@@ -191,6 +191,7 @@ namespace GoblinGames
         {
             usedCard = null;
             isCardAvailable = true;
+            _usedCard.GetComponent<Image>().enabled = true;
             CardBackToOriginPos(_usedCard);
         }
 
@@ -210,7 +211,8 @@ namespace GoblinGames
             Card newCardComp = newCard.GetComponent<Card>();
             newCardComp.OwnerHand = this;
             newCardComp.CardNumber = 1;
-            newCardComp.CardSkill = newCard.AddComponent<Skill_Test>();
+            newCardComp.CardSkill = newCard.GetComponent<Skill>();
+            newCardComp.CardSkill.CardNumber = 1;
             newCardComp.CardSkill.OwnerHand = this;
             newCardComp.CardSkill.OwnerCard = newCardComp;
             //newCard.GetComponent<Image>().so
