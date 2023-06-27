@@ -21,14 +21,14 @@ namespace GoblinGames
         private Card usedCard = null;
         private bool isCardAvailable = true;
         private Card cardBeingDragging = null;
-
+        
         #region Resolution
         private RectTransform rectTransform;
         #endregion
         public GameObject TowerField { get { return towerField; } set { towerField = value; } }
         public Card CardBeingDragging { get { return cardBeingDragging; } set { cardBeingDragging = value; } }
         public Canvas Canvas { get { return canvas; } }
-        public List<Card> Hands { get { return Hands; } }
+        public IReadOnlyList<Card> Hands { get { return Hands; } }
         public bool IsCardAvailable { get { return isCardAvailable; } set { isCardAvailable = value; } }
 
         #region Test
@@ -210,12 +210,7 @@ namespace GoblinGames
             newCard.transform.position = new Vector3(Screen.width, 0f);
             Card newCardComp = newCard.GetComponent<Card>();
             newCardComp.OwnerHand = this;
-            newCardComp.CardNumber = 1;
-            newCardComp.CardSkill = newCard.GetComponent<Skill>();
-            newCardComp.CardSkill.CardNumber = 1;
-            newCardComp.CardSkill.OwnerHand = this;
-            newCardComp.CardSkill.OwnerCard = newCardComp;
-            //newCard.GetComponent<Image>().so
+            newCardComp.LoadData();
             hands.Add(newCardComp);
         }
 

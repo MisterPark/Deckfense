@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5884399722540903310}
   - component: {fileID: 5884399722540903311}
   - component: {fileID: 3156057319859642395}
-  - component: {fileID: -755749066625651026}
   m_Layer: 5
   m_Name: TestCard
   m_TagString: Untagged
@@ -90,17 +89,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdfa45d4bc0b0c44802f752d59d2427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-755749066625651026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5884399722540903305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50f08446df956d749ac84ec06e2da990, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  towerSummonPrebs:
-  - {fileID: 1606353662371681233, guid: d55694cdb05dd444488cf3ddd90bc2a1, type: 3}
+  data: {fileID: 11400000, guid: 74f04db7004ad1a48a5d4297b282068c, type: 2}

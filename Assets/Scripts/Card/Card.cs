@@ -7,8 +7,9 @@ namespace GoblinGames
     public class Card : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public enum CardType {Tower, Spell, none};
-
         public const float heightRequiredUseCard = 0.2f;
+
+        [SerializeField] private CardData data;
         //private Vector3 originPosition;
         //[HideInInspector] public Quaternion originRotation;
         //public Vector3 originScale;
@@ -20,19 +21,21 @@ namespace GoblinGames
         private bool isMouseHover;
         private float hoverTime;
 
+        private string cardName;
         private int cardNumber;
         private Hand ownerHand;
         private int siblingIndex;
         private CardType type;
-        private Skill cardSkill;
+        private CardSkill cardSkill;
         private RectTransform rectTransform;
 
 
+        public string CardName { get { return cardName; } set { cardName = value; } }
         public int CardNumber { get { return cardNumber; } set { cardNumber = value; } }
         public Hand OwnerHand { get { return ownerHand; } set { ownerHand = value; } }
         public int SiblingIndex { get { return siblingIndex; } set { siblingIndex = value; } }
         public CardType Type { get { return type; } set { type = value; } }
-        public Skill CardSkill { get { return cardSkill; } set { cardSkill = value; } }
+        public CardSkill CardSkill { get { return cardSkill; } set { cardSkill = value; } }
         public RectTransform RectTransform { get { return rectTransform; } }
 
 
@@ -177,5 +180,14 @@ namespace GoblinGames
             rectTransform.localScale = new Vector3(1.4f, 1.4f, 1f);
         }
 
+        public void LoadData()
+        {
+            cardNumber = (int)data.Kind;
+            cardName = data.Kind.ToString();
+            cardSkill = CardSkill.Create(gameObject, data.Kind);
+            cardSkill.CardNumber = cardNumber;
+            cardSkill.OwnerCard = this;
+            cardSkill.OwnerHand = ownerHand;
+        }
     }
 }

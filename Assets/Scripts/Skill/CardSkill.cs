@@ -6,10 +6,10 @@ using UnityEngine.EventSystems;
 
 namespace GoblinGames
 {
-    public class Skill : MonoBehaviour
+    public class CardSkill : MonoBehaviour
     {
 
-        [SerializeField] protected List<GameObject> towerSummonPrebs = null;
+        [SerializeField] protected List<GameObject> towerSummonPrefabs = new List<GameObject>();
         protected GameObject towerSummon = null;
 
         protected Hand ownerHand;
@@ -188,6 +188,25 @@ namespace GoblinGames
             {
                 UseCancel();
             }
+        }
+
+        static public CardSkill Create(GameObject card, CardData.CardKind cardKind)
+        {
+            CardSkill skill = null;
+            switch (cardKind)
+            {
+                case CardData.CardKind.TestCard:
+                    {
+                        skill = card.AddComponent<CardSkill_Test>();
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+
+            }
+            return skill;
         }
     }
 }

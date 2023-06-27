@@ -6,12 +6,13 @@ using UnityEngine.UI;
 
 namespace GoblinGames
 {
-    public class Skill_Test : Skill
+    public class CardSkill_Test : CardSkill
     {
         // Start is called before the first frame update
         void Start()
         {
             ownerCard.Type = Card.CardType.Tower;
+            towerSummonPrefabs.Add(Resources.Load<GameObject>("Tower/0001_BasicTower"));
         }
 
         public override void Use_Start()
@@ -32,7 +33,7 @@ namespace GoblinGames
 
         public override void CardBeginDrag(PointerEventData eventData)
         {
-            towerSummon = Instantiate(towerSummonPrebs[0]);
+            towerSummon = Instantiate(towerSummonPrefabs[0]);
         }
 
         public override void CardDrag(PointerEventData eventData)
